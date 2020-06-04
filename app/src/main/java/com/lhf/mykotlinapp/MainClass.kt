@@ -8,13 +8,86 @@ class MainClass {
         @JvmStatic
         fun main(args: Array<String>) {
             println("Hello, Kotlin!")
-//            testVars(1, 2, 3, 4, 5)
-//            testLambda()
-//            testString()
-//            testNullCheck()
-            testRange()
+//            testVars(1, 2, 3, 4, 5) // 可变长参数
+//            testLambda() // Lambda表达式
+//            testString() // 字符串模板
+//            testNullCheck() // NULL检查机制
+//            testRange() // 区间的使用
+//            testCommonDataType() // 基本数据类型的使用
+//            testArray() // 数组的使用
+            testString1() // 字符串的使用
         }
 
+        /**
+         * 字符串的使用
+         */
+        private fun testString1() {
+            // 字符串
+            val str = "Joshua"
+            for (c in str) {
+                println("c = ${c}")
+            }
+            println("===============================")
+            println("str[0] = ${str[0]}") // 可以像使用数组一样，使用[i]直接获取String对应位置的字符
+            println("str.get(1) = ${str.get(1)}") // 还可以使用get(i)方法获取对应位置的字符
+            println("===============================")
+            // 使用"""可以定义多行的字符串
+            val multiStr = """
+                |first line|
+                |   second line|
+                |third line|
+            """
+            println("multiStr = ${multiStr}") // 默认前面会有一些前置空格
+            println("===============================")
+            println("multiStr.trimIndent() = ${multiStr.trimIndent()}") // 去除前置空格
+            println("===============================")
+            println("multiStr.trimIndent() = ${multiStr.trimMargin()}") // 去除当前行"|"之前的空格，包括"|"
+            println("===============================")
+        }
+
+        /**
+         * 数组的使用
+         */
+        private fun testArray() {
+            // 数组的创建两种方式：一种是使用函数arrayOf()；另外一种是使用工厂函数。
+            val arrayA = arrayOf("1", "2", "3")
+            println("arrayA = ${arrayA.contentToString()}") // 数组打印可以直接调 contentToString()
+            val arrayB = Array(4) { i -> i * 2 }
+            println("arrayB = ${arrayB.contentToString()}")
+            // 除了类Array，还有ByteArray, ShortArray, IntArray，用来表示各个类型的数组，
+            // 省去了装箱操作，因此效率更高
+            val arrayC = IntArray(5) { i -> i * 2 }
+            println("arrayC = ${arrayC.contentToString()}")
+        }
+
+        /**
+         * 基本数据类型的使用
+         */
+        private fun testCommonDataType() {
+            println("MainClass.testCommonDataType")
+            val intNum: Int = 1_000_000 // 可以使用下划线使数字常量更易读
+            println("intNum = ${intNum}")
+            val doubleNum: Double = 123.5e10
+            println("doubleNum = ${doubleNum}")
+            val longNum: Long = 1_000_000_000_000L
+            println("longNum = ${longNum}")
+
+            println("===============================")
+            // == 比较值；===比较地址
+            val intNum1: Int = 1_000_000;
+            val intNum2: Int = 1_000_000;
+            println("intNum2 == intNum1 = ${intNum2 == intNum1}") // true
+            println("intNum2 === intNum1 = ${intNum2 === intNum1}") // true
+            val intNum3: Int? = 1_000_000;
+            val intNum4: Int? = 1_000_000;
+            println("intNum4 == intNum3 = ${intNum4 == intNum3}") // true
+            // Int? 类型的，即使数值相同，比较地址结果为false
+            println("intNum4 === intNum3 = ${intNum4 === intNum3}") // false
+        }
+
+        /**
+         * 区间的使用
+         */
         private fun testRange() {
             println("MainClass.testRange")
             println("================ 循环输出 ===============")
@@ -38,7 +111,7 @@ class MainClass {
         private fun testNullCheck() {
             println("MainClass.testNullCheck")
 //            var age: String = null // 默认不能赋值为空
-            var age: String? = null // 类型后面加?表示可为空
+            val age: String? = null // 类型后面加?表示可为空
             println("age = $age")
 //            val age1 = age!!.toInt() // 抛出空指针异常
             val age2 = age?.toInt() // 不做处理，返回null
@@ -63,6 +136,10 @@ class MainClass {
             // 模板中的任意表达式：
             val s2 = "${s1.replace("is", "was")}, but now is $a"
             println(s2)
+
+            // 想要打印"$"符号（它不支持反斜杠转义），可以使用${'$'}
+            val s3 = "${'$'}100"
+            println("s3 = ${s3}")
         }
 
         /**
