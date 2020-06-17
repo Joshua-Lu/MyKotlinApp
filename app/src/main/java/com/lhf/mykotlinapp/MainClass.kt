@@ -15,7 +15,19 @@ class MainClass {
 //            testRange() // 区间的使用
 //            testCommonDataType() // 基本数据类型的使用
 //            testArray() // 数组的使用
-            testString1() // 字符串的使用
+//            testString1() // 字符串的使用
+            testSwap()
+        }
+
+        /**
+         * 交换两个变量
+         */
+        private fun testSwap() {
+            var a = 1
+            var b = 2
+            a = b.also { b = a }
+            println("a = ${a}")
+            println("b = ${b}")
         }
 
         /**
