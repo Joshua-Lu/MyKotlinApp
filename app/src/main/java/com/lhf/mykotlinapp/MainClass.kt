@@ -61,6 +61,27 @@ class MainClass {
         // 省去了装箱操作，因此效率更高
         val arrayC = IntArray(5) { i -> i * 2 }
         println("arrayC = ${arrayC.contentToString()}")
+
+        // 显示定义数组数据类型
+        val arrayD: Array<Byte> = arrayOf(1, 2, 3)
+        println("arrayD item Type ${arrayD.get(0).javaClass}") // arrayD item Type byte
+
+        // 遍历数组
+        // 1. 遍历元素
+        println("遍历元素")
+        for (item in arrayA) {
+            println("item in arrayA: $item")
+        }
+        // 2. 遍历下标
+        println("遍历下标")
+        for (index in arrayA.indices) {
+            println("index in arrayA: $index")
+        }
+        // 3. 同时遍历下标和元素
+        println("同时遍历下标和元素")
+        for ((index, item) in arrayA.withIndex()) {
+            println("index in arrayA: $index, $item")
+        }
     }
 
     /**
@@ -175,4 +196,106 @@ class MainClass {
         println()
     }
 
+    @Test
+    fun testClass() {
+        val dog = Dog("a", 12)
+        dog.name = "b"
+        println("dog.weight: ${dog.weight}") // dog.weight: 12
+        println("dog.weightInKg: ${dog.weightInKg}") // dog.weightInKg: 6.0
+        dog.weightInKg = 5.0
+        println("dog.weight: ${dog.weight}") // dog.weight: 10
+        println("dog.weightInKg: ${dog.weightInKg}") // dog.weightInKg: 5.0
+
+        // 验证参数为负数，不会修改属性weight
+        dog.weight = -1
+        println("dog.weight: ${dog.weight}") // dog.weight: 10
+    }
+
+    /**
+     * Kotlin中 == 和 equals 是相同的，这与Java不同
+     *
+     * Dog 没有重写equals，== 和 equals默认是判断两个变量是否指向同一个对象
+     */
+    @Test
+    fun testEquals() {
+        // 两个不同的对象，即使属性相同，== 也返回false
+        println("属性相同的两个对象")
+        val dog1 = Dog("d1", 1)
+        val dog2 = Dog("d1", 1)
+        println("dog1 == dog2 : ${dog1 == dog2}") // false
+        println("dog1.equals(dog2) : ${dog1.equals(dog2)}") // false
+
+        // 两个指向相同对象的变量
+        println("两个指向相同对象的变量")
+        val dog3 = dog1
+        println("dog1 == dog3 : ${dog1 == dog3}") // true
+        println("dog1.equals(dog3) : ${dog1.equals(dog3)}") // true
+    }
+
+    /**
+     * DogEquals 重写了equals方法，则根据重写的equals判断
+     */
+    @Test
+    fun testEqualsOverride() {
+        // 两个不同的对象，只要equals里用到的属性相同（实际是equals方法返回true），== 就返回true
+        println("属性相同的两个对象")
+        val dog1 = DogEquals("d1", 1)
+        val dog2 = DogEquals("d1", 1)
+        println("dog1 == dog2 : ${dog1 == dog2}") // true
+        println("dog1.equals(dog2) : ${dog1.equals(dog2)}") // true
+
+        // Kotlin里==就是调用equals方法，那是否有一种方式，明确的比较两个变量是否引用相同的对象？
+        // 有的，Kotlin里使用的是 ===
+        println("dog1 === dog2 : ${dog1 === dog2}") // false
+
+        // 两个指向相同对象的变量
+        println("两个指向相同对象的变量")
+        val dog3 = dog1
+        println("dog1 == dog3 : ${dog1 == dog3}") // true
+        println("dog1.equals(dog3) : ${dog1.equals(dog3)}") // true
+
+        // 两个不同的对象，只要equals里用到的属性相同（实际是equals方法返回true），
+        // 即使其他属性不同，== 还是返回true
+        println("equals里用到的属性相同, 其他属性不同")
+        dog1.varNotInEquals = 1
+        dog2.varNotInEquals = 2
+        println("dog1 == dog2 : ${dog1 == dog2}") // true
+        println("dog1.equals(dog2) : ${dog1.equals(dog2)}") // true
+
+    }
+
+    /**
+     * 测试数据类
+     */
+    @Test
+    fun testDataClass() {
+        // 两个不同的对象，只要属性相同，== 就返回 true
+        println("属性相同的两个对象")
+        val dog1 = DogData("d1", 1)
+        val dog2 = DogData("d1", 1)
+        println("dog1 == dog2 : ${dog1 == dog2}") // true
+        println("dog1.equals(dog2) : ${dog1.equals(dog2)}") // true
+
+        // 构造里用到的属性相同, 其他属性不同，也返回true，
+        // 说明数据类自动重写equals等方法，只使用了构造方法里的变量
+        println("构造里用到的属性相同, 其他属性不同")
+        dog1.varNotInConstructor = 1
+        dog2.varNotInConstructor = 2
+        println("dog1 == dog2 : ${dog1 == dog2}") // true
+        println("dog1.equals(dog2) : ${dog1.equals(dog2)}") // true
+        println("dog1 = ${dog1}") // dog1 = DogData(name=d1, weight=1)
+        println("dog2 = ${dog2}") // dog2 = DogData(name=d1, weight=1)
+
+        // 数据类还提供了copy方法，复制数据对象，修改部分属性
+        val dogCopy = dog1.copy(name = "dogCopy")
+        println("dogCopy = ${dogCopy}")
+
+        // 数据类提供的componentN方法，将数据对象分解成组件属性值
+        val name = dog1.component1()
+        val weight = dog1.component2()
+        println("name = ${name}, weight = ${weight}") // name = d1, weight = 1
+        // 简便写法
+        val (name1, weight1) = dog1
+        println("name1 = ${name1}, weight1 = ${weight1}") // name1 = d1, weight1 = 1
+    }
 }
