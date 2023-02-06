@@ -274,7 +274,6 @@ class MainClass {
         val dog1 = DogData("d1", 1)
         val dog2 = DogData("d1", 1)
         println("dog1 == dog2 : ${dog1 == dog2}") // true
-        println("dog1.equals(dog2) : ${dog1.equals(dog2)}") // true
 
         // 构造里用到的属性相同, 其他属性不同，也返回true，
         // 说明数据类自动重写equals等方法，只使用了构造方法里的变量
@@ -282,13 +281,12 @@ class MainClass {
         dog1.varNotInConstructor = 1
         dog2.varNotInConstructor = 2
         println("dog1 == dog2 : ${dog1 == dog2}") // true
-        println("dog1.equals(dog2) : ${dog1.equals(dog2)}") // true
         println("dog1 = ${dog1}") // dog1 = DogData(name=d1, weight=1)
         println("dog2 = ${dog2}") // dog2 = DogData(name=d1, weight=1)
 
         // 数据类还提供了copy方法，复制数据对象，修改部分属性
         val dogCopy = dog1.copy(name = "dogCopy")
-        println("dogCopy = ${dogCopy}")
+        println("dogCopy = ${dogCopy}") // DogData(name=dogCopy, weight=1)
 
         // 数据类提供的componentN方法，将数据对象分解成组件属性值
         val name = dog1.component1()
@@ -298,4 +296,49 @@ class MainClass {
         val (name1, weight1) = dog1
         println("name1 = ${name1}, weight1 = ${weight1}") // name1 = d1, weight1 = 1
     }
+
+    /**
+     * 测试空值
+     */
+    @Test
+    fun testNull() {
+//        var dog = Dog("a", 1)
+//        dog = null // dog是不可空类型（Kotlin中变量默认是不可空类型），不能赋值为null
+
+        var dog: Dog? = Dog("a", 1)
+        dog = null // 定义dog类型为 Dog? 后，dog即变成可空类型
+
+        dog = Dog("a", 1)
+        // 访问可空类型的方法和属性
+        // 必须先判断不为null
+        // 方式一：显示判断不为null
+        if (dog != null) {
+            dog.bark()
+        }
+        // 方式二：使用Kotlin提供的安全调用 ?.
+        // 这样当dog为null时，就不会调用bark()方法，也就不会出现空指针异常
+        dog?.bark()
+
+        // ?. 结合 let 使用，代替if语句
+        dog?.let {
+            it.bark()
+        }
+
+        // Elvis操作符 ?: 替代if表达式
+        // ?: 左边的不为null，则返回左边的值，否则返回右边的值
+        val nullDog: Dog? = null
+        val weight = if (nullDog != null) nullDog.weight else -1
+        println("MainClass.testNull: weight = ${weight}") // -1
+        val weight1 = nullDog?.weight ?: -1
+        println("MainClass.testNull: weight1 = ${weight1}") // -1
+
+        // 非空断言操作符 !!
+        // !! 左边为null时，抛出空指针异常，右边为null没事
+        dog.canNull = null
+        var x = dog!!.canNull
+        println("MainClass.testNull: x = ${x}") // x = null
+
+//        x = nullDog!!.canNull // 抛出空指针异常 NullPointerException
+    }
+
 }

@@ -22,7 +22,10 @@ class Dog(var name: String, weight_param: Int) {
             weight = (value * 2).roundToInt()
         }
 
-    fun bark() {
+    // 可空变量
+    var canNull: String? = ""
 
+    fun bark() {
+        println("Dog.bark() called")
     }
 }
