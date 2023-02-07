@@ -54,17 +54,52 @@ class MainClass {
     fun testArray() {
         // 数组的创建两种方式：一种是使用函数arrayOf()；另外一种是使用工厂函数。
         val arrayA = arrayOf("1", "2", "3")
-        println("arrayA = ${arrayA.contentToString()}") // 数组打印可以直接调 contentToString()
+        // 数组打印可以直接调 contentToString()
+        println("arrayA = ${arrayA.contentToString()}") // arrayA = [1, 2, 3]
         val arrayB = Array(4) { i -> i * 2 }
-        println("arrayB = ${arrayB.contentToString()}")
+        println("arrayB = ${arrayB.contentToString()}") // arrayB = [0, 2, 4, 6]
         // 除了类Array，还有ByteArray, ShortArray, IntArray，用来表示各个类型的数组，
         // 省去了装箱操作，因此效率更高
-        val arrayC = IntArray(5) { i -> i * 2 }
-        println("arrayC = ${arrayC.contentToString()}")
+        val intArray = IntArray(5) { i -> i * 2 }
+        println("intArray = ${intArray.contentToString()}") // intArray = [0, 2, 4, 6, 8]
 
         // 显示定义数组数据类型
         val arrayD: Array<Byte> = arrayOf(1, 2, 3)
         println("arrayD item Type ${arrayD.get(0).javaClass}") // arrayD item Type byte
+
+        // 用空值初始化数组
+        val nullArray = arrayOfNulls<String>(2)
+        println("MainClass.testArray: nullArray = ${nullArray.contentToString()}") // nullArray = [null, null]
+
+        // 获取数组大小
+        println("MainClass.testArray: arrayA.size = ${arrayA.size}") // arrayA.size = 3
+
+        // 逆序数组中的元素
+        arrayA.reverse()
+        println("MainClass.testArray: arrayA = ${arrayA.contentToString()}") // arrayA = [3, 2, 1]
+
+        // 按自然顺序进行排序
+        arrayA.sort()
+        println("MainClass.testArray: arrayA = ${arrayA.contentToString()}") // arrayA = [1, 2, 3]
+
+        // 找出它是否包含某项
+        println("MainClass.testArray: arrayA.contains(1) = ${arrayA.contains("1")}") // arrayA.contains(1) = true
+
+        // 计算元素和
+        println("MainClass.testArray: intArray = ${intArray.contentToString()}") // intArray = [0, 2, 4, 6, 8]
+        // IntArray 直接调用 sum() 方法
+        println("MainClass.testArray: intArray.sum() = ${intArray.sum()}") // intArray.sum() = 20
+        // 非Int的要使用sumBy，转成int
+        println("MainClass.testArray: arrayA.sumBy { it.toInt() } = ${arrayA.sumBy { it.toInt() }}") // arrayA.sumBy { it.toInt() } = 6
+
+        // 计算元素平均值
+        // IntArray 直接调用 average() 方法
+        println("MainClass.testArray: intArray.average() = ${intArray.average()}") // intArray.average() = 4.0
+
+        // 找出最大、最小项
+        // max()、min()已废弃，使用 maxOrNull()、minOrNull() 代替
+        println("MainClass.testArray: intArray.min() = ${intArray.minOrNull()}") // intArray.min() = 0
+        println("MainClass.testArray: intArray.maxOrNull() = ${intArray.maxOrNull()}") // intArray.maxOrNull() = 8
 
         // 遍历数组
         // 1. 遍历元素
