@@ -48,7 +48,9 @@ class MainClass {
     }
 
     /**
-     * 数组的使用
+     * 测试数组Array
+     *
+     * Array大小不可变，但元素值可以修改
      */
     @Test
     fun testArray() {
@@ -117,6 +119,107 @@ class MainClass {
         for ((index, item) in arrayA.withIndex()) {
             println("index in arrayA: $index, $item")
         }
+    }
+
+    /**
+     * 测试不可变列表 List
+     *
+     * List与Array类似大小也是不可变得，但List里面的值也不能修改
+     */
+    @Test
+    fun testList() {
+        // 不可变列表List
+        val list = listOf(1, 3, 2)
+        println("MainClass.testList: list = $list")
+//        list.get(0) = 2 // 不能修改，无法通过编译
+
+        // 获取大小
+        println("MainClass.testList: list.size = ${list.size}") // list.size = 3
+
+        // 获取某个元素
+        println("MainClass.testList: list.get(0) = ${list.get(0)}") // list.get(0) = 1
+        println("MainClass.testList: list[0] = ${list[0]}") // list[0] = 1
+
+        // 判断是否包含某个元素
+        println("MainClass.testList: list.contains(1) = ${list.contains(1)}") // list.contains(1) = true
+
+        // 遍历List
+        // 1. 遍历元素
+        println("遍历元素")
+        for (item in list) {
+            println("item in list: $item")
+        }
+        // 2. 遍历下标
+        println("遍历下标")
+        for (index in list.indices) {
+            println("index in list: $index")
+        }
+        // 3. 同时遍历下标和元素
+        println("同时遍历下标和元素")
+        for ((index, item) in list.withIndex()) {
+            println("index in list: $index, $item")
+        }
+    }
+
+    /**
+     * 测试可变列表 MutableList
+     *
+     * MutableList相比List，大小、元素值等都可以修改
+     */
+    @Test
+    fun testMutableList() {
+        val mutableList = mutableListOf(1, 3, 2)
+        println("MainClass.testMutableList: mutableList = $mutableList") // [1, 3, 2]
+
+        println("MainClass.testMutableList: 添加")
+        // 添加元素
+        // 1. 在末尾添加
+        mutableList.add(4)
+        println("MainClass.testMutableList: mutableList = $mutableList") // [1, 3, 2, 4]
+        // 2. 在指定位置添加
+        mutableList.add(1, 5)
+        println("MainClass.testMutableList: mutableList = $mutableList") // [1, 5, 3, 2, 4]
+
+        println("MainClass.testMutableList: 移除")
+        // 移除元素
+        mutableList.add(1)
+        println("MainClass.testMutableList: mutableList = $mutableList") // [1, 5, 3, 2, 4, 1]
+        // 1. 移除某个元素值，若有多个相同的值，移除最前面的
+        mutableList.remove(1)
+        println("MainClass.testMutableList: mutableList = $mutableList") // [5, 3, 2, 4, 1]
+        // 2. 移除某个位置上的值
+        mutableList.removeAt(1)
+        println("MainClass.testMutableList: mutableList = $mutableList") // [5, 2, 4, 1]
+
+        println("MainClass.testMutableList: 修改")
+        // 修改某个位置的元素
+        // 1. 使用set方法
+        mutableList.set(0, 6)
+        println("MainClass.testMutableList: mutableList = $mutableList") // [6, 2, 4, 1]
+        // 2. 使用索引操作
+        mutableList[1] = 7
+        println("MainClass.testMutableList: mutableList = $mutableList") // [6, 7, 4, 1]
+
+
+        println("MainClass.testMutableList: 改变顺序及批量修改")
+        // 改变顺序及批量修改
+        mutableList.reverse() // 翻转
+        println("MainClass.testMutableList: mutableList = $mutableList") // [1, 4, 7, 6]
+        mutableList.sort() // 排序
+        println("MainClass.testMutableList: mutableList = $mutableList") // [1, 4, 6, 7]
+        mutableList.shuffle() // 随机打乱
+        println("MainClass.testMutableList: mutableList = $mutableList") // [7, 4, 6, 1]
+        mutableList.removeAll(listOf(1, 2)) // 移除另一集合中所包含的元素
+        println("MainClass.testMutableList: mutableList = $mutableList") // [7, 4, 6]
+        mutableList.addAll(listOf(1, 2)) // 添加另一集合中所包含的元素
+        println("MainClass.testMutableList: mutableList = $mutableList") // [7, 4, 6, 1, 2]
+        mutableList.retainAll(listOf(1, 2)) // 仅保留另一集合中所包含的元素
+        println("MainClass.testMutableList: mutableList = $mutableList") // [1, 2]
+        val copyList = mutableList.toList() // 复制整个List，返回的是不可修改的List
+        println("MainClass.testMutableList: copyList = $copyList") // copyList = [1, 2]
+        mutableList.clear() // 清空
+        println("MainClass.testMutableList: mutableList = $mutableList") // []
+        println("MainClass.testMutableList: copyList = $copyList") // copyList = [1, 2]
     }
 
     /**
@@ -375,5 +478,4 @@ class MainClass {
 
 //        x = nullDog!!.canNull // 抛出空指针异常 NullPointerException
     }
-
 }
