@@ -1,5 +1,6 @@
 package com.lhf.mykotlinapp
 
+import com.lhf.mykotlinapp.generic.*
 import org.junit.Test
 
 /**
@@ -326,7 +327,7 @@ class MainClass {
         testVars(1, 2, 3, 4, 5)
     }
 
-    fun testVars(vararg v: Int) {
+    private fun testVars(vararg v: Int) {
         println("MainClass.testVars")
         for (vt in v) {
             print(vt)
@@ -477,5 +478,23 @@ class MainClass {
         println("MainClass.testNull: x = ${x}") // x = null
 
 //        x = nullDog!!.canNull // 抛出空指针异常 NullPointerException
+    }
+
+    /**
+     * 测试泛型的 in 和 out
+     */
+    @Test
+    fun testGeneric() {
+        var foodSeller: Seller<Food>
+        foodSeller = FoodSeller()
+        // Seller<T>不加out时，该行无法编译，添加后即可编译
+        // out 是协变，表示可以用子类代替父类
+        foodSeller = VeganFoodSeller()
+
+        var vegan: Consumer<VeganFood>
+        vegan = Vegan()
+        // Consumer<T>不加in时，该行无法编译，添加后即可编译
+        // in 是逆变，表示可以用父类代替子类
+        vegan = Person()
     }
 }
