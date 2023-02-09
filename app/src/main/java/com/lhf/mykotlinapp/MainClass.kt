@@ -310,13 +310,73 @@ class MainClass {
     }
 
     /**
-     * Lambda表达式
+     * 测试Lambda表达式
      */
     @Test
     fun testLambda() {
         println("MainClass.testLambda")
-        val sumlambda: (Int, Int) -> Int = { x, y -> x + y }
-        println(sumlambda(1, 2))
+        // 显示定义参数类型及返回值类型, (Int, Int) -> Int 即为sumlambda的类型
+        var sumlambda: (Int, Int) -> Int = { x, y -> x + y }
+        // 使用invoke调用
+        println(sumlambda.invoke(1, 2)) // 3
+        // 不显示定义，编译器可以推断出来
+        sumlambda = { x: Int, y: Int -> x + y }
+        // 省略invoke的快捷调用
+        println(sumlambda(1, 2)) // 3
+
+        val addFive: (Int) -> Int = { x -> x + 5 }
+        println("MainClass.testLambda: addFive(1) = ${addFive(1)}") // addFive(1) = 6
+        // 如果lambda只有一个参数，并且编译器可以推断出它的类型，则可以用it代替参数
+        val addFive1: (Int) -> Int = { it + 5 }
+        println("MainClass.testLambda: addFive1(1) = ${addFive1(1)}") // addFive(1) = 6
+
+        // 将lambda作为函数参数
+        convert(10.0, { it * 2 }) // 10.0 is converted to 20.0
+        // lambda是函数的最后一个参数时，还可以把表达式移到括号外面
+        convert(10.0) { it * 2 } // 10.0 is converted to 20.0
+        // 如果函数只有一个lambda参数，还可以把括号也省略
+        convertFive {
+            it * 2
+        } // 5 is converted to 10
+
+        // lambda作为函数的返回值
+        val converter = getConverter("addFive")
+        println("MainClass.testLambda: converter(2.0) = ${converter(2.0)}") // converter(2.0) = 7.0
+        // 还可以将返回的lambda，传给另一个高阶函数
+        convert(2.0, converter) // 2.0 is converted to 7.0
+    }
+
+    /**
+     * 将lambda作为函数返回值的高阶函数
+     *
+     * lambda类型，可以使用自定义的类型别名 DoubleConverter
+     */
+    fun getConverter(name: String): DoubleConverter {
+        return when (name) {
+            "addFive" -> { x: Double -> x + 5 }
+            "double" -> { x: Double -> x * 2 }
+            else -> { x: Double -> x }
+        }
+    }
+
+    /**
+     * 将lambda作为函数参数的高阶函数
+     *
+     * lambda类型，可以使用自定义的类型别名 DoubleConverter
+     */
+    private fun convert(x: Double, converter: DoubleConverter): Double {
+        val result = converter(x)
+        println("MainClass.convert: $x is converted to $result")
+        return result
+    }
+
+    /**
+     * 只有一个lambda参数的高阶函数
+     */
+    private fun convertFive(converter: (Int) -> Int): Int {
+        val result = converter(5)
+        println("MainClass.convert: 5 is converted to $result")
+        return result
     }
 
     /**
@@ -498,3 +558,6 @@ class MainClass {
         vegan = Person()
     }
 }
+
+// 代码中多处用到了 (Double) -> Double 类型，因此可以使用 typealias 定义类型别名，提高代码可读性
+typealias DoubleConverter = (Double) -> Double
