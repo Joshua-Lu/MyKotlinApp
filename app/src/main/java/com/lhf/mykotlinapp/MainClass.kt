@@ -351,7 +351,7 @@ class MainClass {
      *
      * lambda类型，可以使用自定义的类型别名 DoubleConverter
      */
-    fun getConverter(name: String): DoubleConverter {
+    private fun getConverter(name: String): DoubleConverter {
         return when (name) {
             "addFive" -> { x: Double -> x + 5 }
             "double" -> { x: Double -> x * 2 }
@@ -501,15 +501,19 @@ class MainClass {
      */
     @Test
     fun testNull() {
+        // 开关，控制测试的变量是否为null
+        val isNull = false
+
 //        var dog = Dog("a", 1)
 //        dog = null // dog是不可空类型（Kotlin中变量默认是不可空类型），不能赋值为null
 
         var dog: Dog? = Dog("a", 1)
-        dog = null // 定义dog类型为 Dog? 后，dog即变成可空类型
+        if (isNull) {
+            dog = null // 定义dog类型为 Dog? 后，dog即变成可空类型
+        }
 
-        dog = Dog("a", 1)
         // 访问可空类型的方法和属性
-        // 必须先判断不为null
+        // 必须先判断变量不为null
         // 方式一：显示判断不为null
         if (dog != null) {
             dog.bark()
@@ -523,21 +527,18 @@ class MainClass {
             it.bark()
         }
 
-        // Elvis操作符 ?: 替代if表达式
+        // Elvis操作符 ?: 在某些场景下替代if表达式
         // ?: 左边的不为null，则返回左边的值，否则返回右边的值
-        val nullDog: Dog? = null
-        val weight = if (nullDog != null) nullDog.weight else -1
-        println("MainClass.testNull: weight = ${weight}") // -1
-        val weight1 = nullDog?.weight ?: -1
-        println("MainClass.testNull: weight1 = ${weight1}") // -1
+        val weight = if (dog != null) dog.weight else -1
+        println("MainClass.testNull: weight = $weight") // 1， -1
+        val weight1 = dog?.weight ?: -1
+        println("MainClass.testNull: weight1 = $weight1") //1， -1
 
-        // 非空断言操作符 !!
+        // 非空断言操作符 !! ，在对象必须不为null的场景使用
         // !! 左边为null时，抛出空指针异常，右边为null没事
-        dog.canNull = null
-        var x = dog!!.canNull
-        println("MainClass.testNull: x = ${x}") // x = null
-
-//        x = nullDog!!.canNull // 抛出空指针异常 NullPointerException
+        dog?.canNull = null
+        val x = dog!!.canNull // NullPointerException
+        println("MainClass.testNull: x = $x") // x = null
     }
 
     /**
@@ -556,6 +557,57 @@ class MainClass {
         // Consumer<T>不加in时，该行无法编译，添加后即可编译
         // in 是逆变，表示可以用父类代替子类
         vegan = Person()
+    }
+
+    /**
+     * 测试Kotlin内置高阶函数
+     */
+    @Test
+    fun testHigherOrderFunctions() {
+        val pirates = listOf(
+            Pirate("Luffy", 19, 30.0),
+            Pirate("Zoro", 21, 11.11),
+            Pirate("Sanji", 21, 10.32),
+            Pirate("Nami", 20, 3.66, false),
+            Pirate("Usopp", 19, 5.0)
+        )
+
+        // 最大最小值
+        // 返回最大最小值对应的对象
+        val maxRewardPirate = pirates.maxByOrNull { it.reward }
+        val minRewardPirate = pirates.minByOrNull { it.reward }
+        println("MainClass.testHigherOrderFunctions: maxRewardPirate = $maxRewardPirate , minRewardPirate = $minRewardPirate")
+        // 返回最大最小值数值
+        val maxReward = pirates.maxOf { it.reward }
+        val minReward = pirates.minOf { it.reward }
+        println("MainClass.testHigherOrderFunctions: maxReward = $maxReward , minReward = $minReward")
+
+        // filter函数
+        // 返回符合某个条件的List
+        val highRewardList = pirates.filter { it.reward > 10.0 }
+        println("MainClass.testHigherOrderFunctions: highRewardList = $highRewardList")
+        // 返回不符合某个条件的List
+        val femaleList = pirates.filterNot { it.male }
+        println("MainClass.testHigherOrderFunctions: femaleList = $femaleList")
+
+        // map函数
+        val nameList = pirates.map { it.name }
+        println("MainClass.testHigherOrderFunctions: nameList = $nameList")
+
+        // forEach
+        println("姓名列表：")
+        pirates.forEach { println(it.name) }
+
+        // groupBy函数，返回的是map，其中key是groupBy的lambda参数，value是符合条件key的元素List
+        pirates.groupBy { it.age }.forEach {
+            println("年龄为 ${it.key} 的有：")
+            it.value.forEach { pirate -> println("    ${pirate.name}") }
+
+        }
+
+        // fold函数
+        val rewardSum = pirates.fold(0.0) { rewardSum, item -> rewardSum + item.reward }
+        println("MainClass.testHigherOrderFunctions: 总悬赏金为： $rewardSum")
     }
 }
 
