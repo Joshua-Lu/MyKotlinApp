@@ -1,6 +1,7 @@
 package com.lhf.mykotlinapp
 
 import com.lhf.mykotlinapp.generic.*
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 /**
@@ -608,6 +609,17 @@ class MainClass {
         // fold函数
         val rewardSum = pirates.fold(0.0) { rewardSum, item -> rewardSum + item.reward }
         println("MainClass.testHigherOrderFunctions: 总悬赏金为： $rewardSum")
+    }
+
+    /**
+     * 测试协程
+     */
+    @Test
+    fun testCoroutines() {
+        println("Thread.currentThread().name = ${Thread.currentThread().name}") // main
+        runBlocking {
+            println("Thread.currentThread().name = ${Thread.currentThread().name}") // main @coroutine#1
+        }
     }
 }
 
