@@ -621,6 +621,52 @@ class MainClass {
             println("Thread.currentThread().name = ${Thread.currentThread().name}") // main @coroutine#1
         }
     }
+
+    /**
+     * 作用域函数是Kotlin比较重要的一个特性，共分为以下5种：let、run、with、apply 以及 also
+     */
+    @Test
+    fun testScopeFunctions() {
+        val dog = Dog("dog", 1)
+        // let: public inline fun <T, R> T.let(block: (T) -> R): R
+        //
+        val letReturn = dog.let {
+            it.name = "letDog"
+            "let return name: ${it.name}"
+        }
+        println("letReturn = $letReturn") // letReturn = let return name: letDog
+
+
+        //run: public inline fun <T, R> T.run(block: T.() -> R): R
+        val runReturn = dog.run {
+            name = "runDog"
+            "run return name: $name"
+        }
+        println("runReturn = $runReturn") // runReturn = run return name: runDog
+
+        // with: public inline fun <T, R> with(receiver: T, block: T.() -> R): R
+        val withReturn = with(dog) {
+            name = "withDog"
+            "with return name: $name"
+        }
+        println("withReturn = $withReturn") // withReturn = with return name: withDog
+
+        // apply: public inline fun <T> T.apply(block: T.() -> Unit): T
+        val applyReturn = dog.apply {
+            name = "applyDog"
+            "with return name: $name"
+        }
+        println("applyReturn = $applyReturn") // applyReturn = com.lhf.mykotlinapp.Dog@6504e3b2
+        println("applyReturn.name = ${applyReturn.name}") // applyReturn.name = applyDog
+
+        // also: public inline fun <T> T.also(block: (T) -> Unit): T
+        val alsoReturn = dog.also {
+            it.name = "alsoDog"
+            "also return name: ${it.name}"
+        }
+        println("alsoReturn = $alsoReturn") // alsoReturn = com.lhf.mykotlinapp.Dog@6504e3b2
+        println("alsoReturn.name = ${alsoReturn.name}") // alsoReturn.name = alsoDog
+    }
 }
 
 // 代码中多处用到了 (Double) -> Double 类型，因此可以使用 typealias 定义类型别名，提高代码可读性
